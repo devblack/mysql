@@ -130,6 +130,36 @@ class Parser
         }
     }
 
+    /**
+     * @param int $type
+     * @param mixed $value
+     * @return bool|float|int|string|null
+     */
+    private function fieldDataType(int $type, mixed $value)
+    {
+        switch ($type) {
+            case Constants::FIELD_TYPE_TINY:
+                $value = (bool) $value;
+                break;
+            case Constants::FIELD_TYPE_SHORT:
+            case Constants::FIELD_TYPE_LONG:
+            case Constants::FIELD_TYPE_LONGLONG:
+            case Constants::FIELD_TYPE_INT24:
+                $value = (int) $value;
+                break;
+            case Constants::FIELD_TYPE_FLOAT:
+            case Constants::FIELD_TYPE_DOUBLE:
+                $value = (float) $value;
+                break;
+            case Constants::FIELD_TYPE_NULL:
+                $value = null;
+                break;
+            default:
+                $value = (string) $value;
+        }
+        return $value;
+    }
+
     /** @var string $data */
     public function handleData($data)
     {
@@ -142,7 +172,7 @@ class Parser
         while ($this->buffer->length() >= $this->pctSize) {
             if ($this->state === self::STATE_STANDBY) {
                 $this->pctSize = $this->buffer->readInt3();
-                //printf("packet size:%d\n", $this->pctSize);
+                // printf("packet size:%d\n", $this->pctSize);
                 $this->state = self::STATE_BODY;
                 $this->seq = $this->buffer->readInt1() + 1;
             }
@@ -298,7 +328,7 @@ class Parser
                 } elseif ($this->rsState === self::RS_STATE_ROW) {
                     $row = [];
                     foreach ($this->resultFields as $field) {
-                        $row[$field['name']] = $packet->readStringLen();
+                        $row[$field['name']] = $this->fieldDataType($field['type'], $packet->readStringLen());
                     }
 
                     if ($this->debug) {

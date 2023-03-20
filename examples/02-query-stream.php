@@ -10,7 +10,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $factory = new Factory();
 $connection = $factory->createLazyConnection(getenv('MYSQL_URI') ?: 'test:test@localhost/test');
 
-$query = isset($argv[1]) ? $argv[1] : 'select * from book';
+$query = isset($argv[1]) ? $argv[1] : 'SELECT * FROM BOOK;';
 $stream = $connection->queryStream($query);
 
 $stream->on('data', function ($row) {

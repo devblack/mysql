@@ -81,6 +81,7 @@ class AuthenticateCommand extends AbstractCommand
             Constants::CLIENT_PROTOCOL_41 |
             Constants::CLIENT_INTERACTIVE |
             Constants::CLIENT_TRANSACTIONS |
+            Constants::CLIENT_MULTI_RESULTS |
             Constants::CLIENT_SECURE_CONNECTION |
             Constants::CLIENT_CONNECT_WITH_DB;
 
